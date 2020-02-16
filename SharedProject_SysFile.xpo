@@ -1,0 +1,124 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: CLS
+
+; Microsoft Dynamics AX Class: SysFile выгружен
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #SysFile
+    PROPERTIES
+      Name                #SysFile
+      Extends             #
+      RunOn               #Called from
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #classDeclaration
+        #class SysFile
+        #{
+        #}
+      ENDSOURCE
+      SOURCE #checkFileExists
+        #// Проверка существования файла с выдачей сообщения
+        #static boolean checkFileExists( str     _fileName
+        #                              , boolean _acceptFolder = true
+        #                              )
+        #{
+        #    boolean ret = true;
+        #;
+        #    if ( !SysFile::fileExists( _fileName, _acceptFolder))
+        #        ret = checkFailed( strfmt( "Файл%2 \"%1\" не найден!"
+        #                                 , _fileName
+        #                                 , _acceptFolder ? " (или каталог)" : ""
+        #                                 ));
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #createDirectory
+        #// Создание каталога
+        #static void createDirectory( FilePath _directory)
+        #{
+        #;
+        #    new InteropPermission(InteropKind::ClrInterop).assert();
+        #
+        #    System.IO.Directory::CreateDirectory( _directory);
+        #
+        #    CodeAccessPermission::revertAssert();
+        #}
+      ENDSOURCE
+      SOURCE #deleteFile
+        #// Удаление файла
+        #static void deleteFile( FilenameSave _fileName)
+        #{
+        #    InteropPermission permission = new InteropPermission(InteropKind::ClrInterop);
+        #;
+        #    permission.assert();
+        #
+        #    System.IO.File::Delete( _fileName);
+        #}
+      ENDSOURCE
+      SOURCE #fileExists
+        #// Проверка существования файла
+        #static boolean fileExists( str _fileName, boolean _acceptFolder = true)
+        #{
+        #    InteropPermission   interopPerm;
+        #    FileIOPermission    fileIOPerm;
+        #    boolean ret;
+        #;
+        #    interopPerm = new InteropPermission(InteropKind::ClrInterop);
+        #    interopPerm.assert();
+        #
+        #    if (substr(_filename, strlen(_filename), 1) == '\\')
+        #        _filename = substr(_filename, 1, strlen(_filename)-1);
+        #
+        #    ret = System.IO.File::Exists(_filename);
+        #
+        #    //Search to see if it's a folder
+        #    if( !ret && _acceptFolder)
+        #        //BP deviation documented
+        #        ret = System.IO.Directory::Exists(_filename);
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: PRN
+
+; Microsoft Dynamics AX Project : SysFile unloaded
+; --------------------------------------------------------------------------------
+  PROJECTVERSION 2
+  
+  PROJECT #SysFile
+   SHARED
+  PROPERTIES
+    Name                #SysFile
+  ENDPROPERTIES
+  
+    PROJECTCLASS ProjectNode
+    GROUP #Classes
+      PROPERTIES
+        Name                #Classes
+        ProjectGroupType    #Classes
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      BEGINNODE
+        FILETYPE 0
+        UTILTYPE 45
+        UTILOBJECTID 41309
+        NODETYPE 329
+        NAME #SysFile
+      ENDNODE
+      ENDGROUP
+      
+  ENDPROJECT
+  
+
+***Element: END
