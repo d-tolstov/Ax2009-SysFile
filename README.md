@@ -1,2 +1,7 @@
-# Ax2009-SysFile
+## Ax2009 SysFile
 Collect all of file functions in one class
+
+- checkFileExists
+- createDirectory
+- deleteFile
+- fileExists
